@@ -1,0 +1,103 @@
+Stand Automóvel
+
+	Marca:
+		id:int
+		nome: String
+		dataCriacao: Date
+
+	Carro:
+		id: int
+		marca: Marca
+		modelo: String
+		categoria: String
+		cor: Enum
+		combustível: Enum
+		ano: int
+		quilometros: int
+		cilindrada: int
+		Potência: int
+		Caixa: Enum
+		portas: int
+		lugares: int
+		Origem: Enum(Países)
+		Consumo 100: double
+		Tempo 0-100: double
+		Condição: Enum
+
+	Utilizador:
+		id: int
+		nome: String
+		email: email
+		password: String
+		telemovel: String
+		nacionalidade: Enum
+		Distrito: Enum
+		cidade : Enum
+		dataNascimento: Date
+		admin: bool
+		
+	AnuncioVenda:
+		id: int
+		idCarro: int
+		idAnunciante(Utilizador): int
+		localizacao: String
+		Garantia: bool
+		Tempo garantia: int
+		2a chave: bool
+		preço: double
+		negociavel: bool
+
+	AnuncioAluguer:
+		id: int
+		idCarro: int
+		idAnunciante: int
+		localizacao: String
+		seguro: bool
+		tempo seguro: int
+		preço: double
+		negociavel: bool
+
+
+	Asseguradora:
+		id: int
+		nome: String
+		email: email
+		telefone: String
+		sede: String
+
+	Seguro:
+		id: int
+		idDono: int
+		idCarro: int
+		nome: String
+		vantagens: String
+		preço: double
+	
+	Negocios:
+		id: int
+		idCarro: int
+		idAnunciante: int
+		idComprador: int
+		idAnuncio: int
+		price: double
+		concluido: bool
+	
+	ComentariosCarros:
+		id: int
+		idComentador: int
+		idCarro : int
+		comentario : String
+		dataComentario : Date
+		rating: double
+		
+	ComentariosSeguradora:
+		id: int
+		idComentador: int
+		idSeguradora: int
+		comentario : String
+		rating : double
+								
+	Favoritos:
+		id: int
+		idUtilizador: int
+		idCarro: int
