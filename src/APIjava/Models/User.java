@@ -8,10 +8,11 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
-    private String nacionality;
+    private String nationality;
     private String district;
     private String city;
-    private Date birthDate;
+    private String birthDate;
+    private Date accountCreationDate;
     private boolean admin;
 
     private static final int INT_BY_DEFAULT = 0;
@@ -26,39 +27,54 @@ public class User {
         this.email = STRING_BY_DEFAULT;
         this.password = STRING_BY_DEFAULT;
         this.phoneNumber = STRING_BY_DEFAULT;
-        this.nacionality = STRING_BY_DEFAULT;
+        this.nationality = STRING_BY_DEFAULT;
         this.district = STRING_BY_DEFAULT;
         this.city = STRING_BY_DEFAULT;
-        this.birthDate = DATE_BY_DEFAULT;
+        this.birthDate = STRING_BY_DEFAULT;
+        this.accountCreationDate = DATE_BY_DEFAULT;
         this.admin = BOOLEAN_BY_DEFAULT;
     }
 
 
-    public User(int id, String fullname, String email, String password, String phoneNumber, String nacionality, String district, String city, Date birthDate, boolean admin) {
+    public User(int id, String fullname, String email, String password, String phoneNumber, String nacionality, String district, String city, String birthDate, Date accountCreationDate, boolean admin) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.nacionality = nacionality;
+        this.nationality = nacionality;
         this.district = district;
         this.city = city;
         this.birthDate = birthDate;
+        this.accountCreationDate = accountCreationDate;
         this.admin = admin;
     }
 
-    public User(String fullname, String email, String password, String phoneNumber, String nacionality, String district, String city, Date birthDate, boolean admin) {
+    public User(String fullname, String email, String password, String phoneNumber, String nacionality, String district, String city, String birthDate, Date accountCreationDate, boolean admin) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.nacionality = nacionality;
+        this.nationality = nacionality;
         this.district = district;
         this.city = city;
         this.birthDate = birthDate;
+        this.accountCreationDate = accountCreationDate;
         this.admin = admin;
     }
 
+    public User(int id, String fullname, String email, String phoneNumber, String nacionality, String district, String city, String birthDate, Date accountCreationDate, boolean admin) {
+        this.id = id;
+        this.fullname = fullname;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.nationality = nacionality;
+        this.district = district;
+        this.city = city;
+        this.birthDate = birthDate;
+        this.accountCreationDate = accountCreationDate;
+        this.admin = admin;
+    }
 
     public User(User user) {
         this.id = user.id;
@@ -66,10 +82,11 @@ public class User {
         this.email= user.email;
         this.password = user.password;
         this.phoneNumber = user.phoneNumber;
-        this.nacionality = user.nacionality;
+        this.nationality = user.nationality;
         this.district = user.district;
         this.city = user.city;
         this.birthDate = user.birthDate;
+        this.accountCreationDate = user.accountCreationDate;
         this.admin = user.admin;
     }
 
@@ -114,12 +131,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getNacionality() {
-        return this.nacionality;
+    public String getNationality() {
+        return this.nationality;
     }
 
-    public void setNacionality(String nacionality) {
-        this.nacionality = nacionality;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getDistrict() {
@@ -138,12 +155,21 @@ public class User {
         this.city = city;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return this.birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
+    }
+
+
+    public Date getAccountCreationDate() {
+        return this.accountCreationDate;
+    }
+
+    public void setAccountCreationDate(Date accountCreationDate) {
+        this.accountCreationDate = accountCreationDate;
     }
 
     public boolean isAdmin() {
@@ -158,7 +184,6 @@ public class User {
         this.admin = admin;
     }
 
-
     @Override
     public String toString() {
         return "{" +
@@ -167,13 +192,12 @@ public class User {
             ", email='" + getEmail() + "'" +
             ", password='" + getPassword() + "'" +
             ", phoneNumber='" + getPhoneNumber() + "'" +
-            ", nacionality='" + getNacionality() + "'" +
+            ", nacionality='" + getNationality() + "'" +
             ", district='" + getDistrict() + "'" +
             ", city='" + getCity() + "'" +
             ", birthDate='" + getBirthDate() + "'" +
+            ", accountCreationDate='" + getAccountCreationDate() + "'" +
             ", admin='" + isAdmin() + "'" +
             "}";
     }
-
-
 }

@@ -6,7 +6,7 @@ public class RentAnnouncement {
     private int renterId;
     private String location;
     private boolean insurance;
-    private int insuranceTime;
+    private int insuranceId;
     private double price;
     private boolean negotiable;
 
@@ -21,30 +21,30 @@ public class RentAnnouncement {
         this.renterId = INT_BY_DEFAULT;
         this.location = STRING_BY_DEFAULT;
         this.insurance = BOOLEAN_BY_DEFAULT;
-        this.insuranceTime = INT_BY_DEFAULT;
+        this.insuranceId = INT_BY_DEFAULT;
         this.price = DOUBLE_BY_DEFAULT;
         this.negotiable = BOOLEAN_BY_DEFAULT;
     }
 
-    public RentAnnouncement(int id, int carId, int renterId, String location, boolean insurance, int insuranceTime,
+    public RentAnnouncement(int id, int carId, int renterId, String location, boolean insurance, int insuranceId,
             double price, boolean negotiable) {
         this.id = id;
         this.carId = carId;
         this.renterId = renterId;
         this.location = location;
         this.insurance = insurance;
-        this.insuranceTime = insuranceTime;
+        this.insuranceId = insuranceId;
         this.price = price;
         this.negotiable = negotiable;
     }
 
-    public RentAnnouncement(int carId, int renterId, String location, boolean insurance, int insuranceTime,
+    public RentAnnouncement(int carId, int renterId, String location, boolean insurance, int insuranceId,
             double price, boolean negotiable) {
         this.carId = carId;
         this.renterId = renterId;
         this.location = location;
         this.insurance = insurance;
-        this.insuranceTime = insuranceTime;
+        this.insuranceId = insuranceId;
         this.price = price;
         this.negotiable = negotiable;
     }
@@ -55,7 +55,7 @@ public class RentAnnouncement {
         this.renterId = announcement.renterId;
         this.location = announcement.location;
         this.insurance = announcement.insurance;
-        this.insuranceTime = announcement.insuranceTime;
+        this.insuranceId = announcement.insuranceId;
         this.price = announcement.price;
         this.negotiable = announcement.negotiable;
     }
@@ -105,13 +105,19 @@ public class RentAnnouncement {
         this.insurance = insurance;
     }
 
-    public int getInsuranceTime() {
-        return this.insuranceTime;
+
+    public boolean isInsurance() {
+        return this.insurance;
     }
 
-    public void setInsuranceTime(int insuranceTime) {
-        this.insuranceTime = insuranceTime;
+    public int getInsuranceId() {
+        return this.insuranceId;
     }
+
+    public void setInsuranceId(int insuranceId) {
+        this.insuranceId = insuranceId;
+    }
+    
 
     public double getPrice() {
         return this.price;
@@ -140,8 +146,8 @@ public class RentAnnouncement {
             ", carId='" + getCarId() + "'" +
             ", renterId='" + getRenterId() + "'" +
             ", location='" + getLocation() + "'" +
-            ", insurance='" + hasInsurance() + "'" +
-            ", insuranceTime='" + getInsuranceTime() + "'" +
+            ", insurance='" + isInsurance() + "'" +
+            ", insuranceId='" + getInsuranceId() + "'" +
             ", price='" + getPrice() + "'" +
             ", negotiable='" + isNegotiable() + "'" +
             "}";

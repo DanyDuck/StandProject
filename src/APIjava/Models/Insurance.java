@@ -2,8 +2,7 @@ package APIjava.Models;
 
 public class Insurance {
     private int id;
-    private int ownerId;
-    private int carId;
+    private int insurerId;
     private String name;
     private String advantages;
     private double pricePerMonth;
@@ -15,8 +14,7 @@ public class Insurance {
 
     public Insurance() {
         this.id = INT_BY_DEFAULT;
-        this.ownerId = INT_BY_DEFAULT;
-        this.carId = INT_BY_DEFAULT;
+        this.insurerId = INT_BY_DEFAULT;
         this.name = STRING_BY_DEFAULT;
         this.advantages = STRING_BY_DEFAULT;
         this.pricePerMonth = DOUBLE_BY_DEFAULT;
@@ -24,19 +22,17 @@ public class Insurance {
     }
 
 
-    public Insurance(int id, int ownerId, int carId, String name, String advantages, double pricePerMonth, double pricePerYear) {
+    public Insurance(int id, int insurerId, String name, String advantages, double pricePerMonth, double pricePerYear) {
         this.id = id;
-        this.ownerId = ownerId;
-        this.carId = carId;
+        this.insurerId = insurerId;
         this.name = name;
         this.advantages = advantages;
         this.pricePerMonth = pricePerMonth;
         this.pricePerYear = pricePerYear;
     }
 
-    public Insurance(int ownerId, int carId, String name, String advantages, double pricePerMonth, double pricePerYear) {
-        this.ownerId = ownerId;
-        this.carId = carId;
+    public Insurance(int insurerId, String name, String advantages, double pricePerMonth, double pricePerYear) {
+        this.insurerId = insurerId;
         this.name = name;
         this.advantages = advantages;
         this.pricePerMonth = pricePerMonth;
@@ -45,8 +41,7 @@ public class Insurance {
 
     public Insurance(Insurance insurance) {
         this.id = insurance.id;
-        this.ownerId = insurance.ownerId;
-        this.carId = insurance.carId;
+        this.insurerId = insurance.insurerId;
         this.name = insurance.name;
         this.advantages = insurance.advantages;
         this.pricePerMonth = insurance.pricePerMonth;
@@ -62,20 +57,12 @@ public class Insurance {
         this.id = id;
     }
 
-    public int getOwnerId() {
-        return this.ownerId;
+    public int getInsurerId() {
+        return this.insurerId;
     }
 
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public int getCarId() {
-        return this.carId;
-    }
-
-    public void setCarId(int carId) {
-        this.carId = carId;
+    public void setInsurerId(int insurerId) {
+        this.insurerId = insurerId;
     }
 
     public String getName() {
@@ -115,14 +102,12 @@ public class Insurance {
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", ownerId='" + getOwnerId() + "'" +
-            ", carId='" + getCarId() + "'" +
+            ", insurerId='" + getInsurerId() + "'" +
             ", name='" + getName() + "'" +
             ", advantages='" + getAdvantages() + "'" +
             ", pricePerMonth='" + getPricePerMonth() + "'" +
             ", pricePerYear='" + getPricePerYear() + "'" +
             "}";
     }
-
 
 }

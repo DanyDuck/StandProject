@@ -12,11 +12,14 @@ import APIjava.Models.Car;
 import APIjava.Models.CarComment;
 import APIjava.Models.Favorites;
 import APIjava.Models.Insurance;
+import APIjava.Models.InsuranceDeal;
 import APIjava.Models.Insurer;
 import APIjava.Models.InsurerComment;
 import APIjava.Models.RentAnnouncement;
 import APIjava.Models.RentDeal;
 import APIjava.Models.SaleAnnouncement;
+import APIjava.Models.SaleDeal;
+import APIjava.Models.User;
 
 public class DAL {
 
@@ -109,7 +112,7 @@ public class DAL {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO Car (brandId,model,category,color,fuelType,year,miles,engineCapacity,horsePower,transmition,doorsNumber,capacity,origin,fuelConsumption,acceleration,condition) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO Car (brandId, model, category, color, fuelType, year, miles, engineCapacity, horsePower, transmition, doorsNumber, capacity, origin, fuelConsumption, acceleration, carCondition) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setInt(1, car.getBrandId());
             stmt.setString(2, car.getModel());
             stmt.setString(3, car.getCategory());
@@ -125,7 +128,7 @@ public class DAL {
             stmt.setString(13, car.getOrigin());
             stmt.setDouble(14, car.getFuelConsumption());
             stmt.setDouble(15, car.getAcceleration());
-            stmt.setString(16, car.getCondition());
+            stmt.setString(16, car.getCarCondition());
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
@@ -135,11 +138,11 @@ public class DAL {
 
     public static void updateCar(int id, int brandId, String model, String category, String color, String fuelType,
             int year, int miles, int engineCapacity, int horsePower, String transmition, int doorsNumber, int capacity,
-            String origin, double fuelConsumption, double acceleration, String condition) {
+            String origin, double fuelConsumption, double acceleration, String carCondition) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE Car SET brandId=? , model=?, category=?, color=?, fuelType=?, year=?, miles=?, engineCapacity=?, horsePower=?, transmition=?, doorsNumber= ?, capacity=?, origin=?, fuelConsumption=?, acceleration=?, condition=? WHERE id=?");
+                    "UPDATE Car SET model=?, category=?, color=?, fuelType=?, year=?, miles=?, engineCapacity=?, horsePower=?, transmition=?, doorsNumber= ?, capacity=?, origin=?, fuelConsumption=?, acceleration=?, carCondition=? WHERE id=?");
             stmt.setString(1, model);
             stmt.setString(2, category);
             stmt.setString(3, color);
@@ -154,7 +157,7 @@ public class DAL {
             stmt.setString(12, origin);
             stmt.setDouble(13, fuelConsumption);
             stmt.setDouble(14, acceleration);
-            stmt.setString(15, condition);
+            stmt.setString(15, carCondition);
             stmt.setInt(16, id);
             stmt.executeUpdate();
             conn.close();
@@ -187,7 +190,7 @@ public class DAL {
                         rs.getInt("miles"), rs.getInt("engineCapacity"), rs.getInt("horsePower"),
                         rs.getString("transmition"), rs.getInt("doorsNumber"), rs.getInt("capacity"),
                         rs.getString("origin"), rs.getDouble("fuelConsumption"), rs.getDouble("acceleration"),
-                        rs.getString("condition")));
+                        rs.getString("carCondition")));
             }
             conn.close();
             return;
@@ -221,7 +224,7 @@ public class DAL {
                 car.setOrigin(rs.getString("origin"));
                 car.setFuelConsumption(rs.getDouble("fuelConsumption"));
                 car.setAcceleration(rs.getDouble("acceleration"));
-                car.setCondition(rs.getString("condition"));
+                car.setCarCondition(rs.getString("carCondition"));
             }
 
             conn.close();
@@ -304,6 +307,31 @@ public class DAL {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM CarComment WHERE id=?");
             stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            CarComment comment = new CarComment();
+            while (rs.next()) {
+                comment.setId(rs.getInt("id"));
+                comment.setComentatorId(rs.getInt("comentatorId"));
+                comment.setCarId(rs.getInt("carId"));
+                comment.setCommentDate(rs.getDate("commentDate"));
+                comment.setComment(rs.getString("comment"));
+                comment.setRating(rs.getDouble("rating"));
+            }
+
+            conn.close();
+            return comment;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new CarComment();
+    }
+
+    public static CarComment getCarCommentByComentatorId(int comentatorId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM CarComment WHERE comentatorId=?");
+            stmt.setInt(1, comentatorId);
             ResultSet rs = stmt.executeQuery();
 
             CarComment comment = new CarComment();
@@ -407,13 +435,12 @@ public class DAL {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO Insurance (ownerId,carId,name,advantages,pricePerMonth,pricePerYear) VALUES (?,?,?,?,?,?)");
-            stmt.setInt(1, insurance.getOwnerId());
-            stmt.setInt(2, insurance.getCarId());
-            stmt.setString(3, insurance.getName());
-            stmt.setString(4, insurance.getAdvantages());
-            stmt.setDouble(5, insurance.getPricePerMonth());
-            stmt.setDouble(6, insurance.getPricePerYear());
+                    "INSERT INTO Insurance (insurerId,name,advantages,pricePerMonth,pricePerYear) VALUES (?,?,?,?,?)");
+            stmt.setInt(1, insurance.getInsurerId());
+            stmt.setString(2, insurance.getName());
+            stmt.setString(3, insurance.getAdvantages());
+            stmt.setDouble(4, insurance.getPricePerMonth());
+            stmt.setDouble(5, insurance.getPricePerYear());
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
@@ -421,18 +448,18 @@ public class DAL {
         }
     }
 
-    public static void updateInsurance(int id, int ownerId, int carId, String name, String advantages,
+    public static void updateInsurance(int id, int insurerId, String name, String advantages,
             double pricePerMonth, double pricePerYear) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE Insurance SET ownerId=?, carId=?, name=?, advantages=?, pricePerMonth=?, pricePerYear=? WHERE id=?");
-            stmt.setInt(1, ownerId);
-            stmt.setInt(2, carId);
-            stmt.setString(3, name);
-            stmt.setString(4, advantages);
-            stmt.setDouble(5, pricePerMonth);
-            stmt.setDouble(6, pricePerYear);
+                    "UPDATE Insurance SET insurerId=?, name=?, advantages=?, pricePerMonth=?, pricePerYear=? WHERE id=?");
+            stmt.setInt(1, insurerId);
+            stmt.setString(2, name);
+            stmt.setString(3, advantages);
+            stmt.setDouble(4, pricePerMonth);
+            stmt.setDouble(5, pricePerYear);
+            stmt.setInt(6, id);
 
             stmt.executeUpdate();
             conn.close();
@@ -460,8 +487,8 @@ public class DAL {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                insuranceList.add(new Insurance(rs.getInt("id"), rs.getInt("ownerId"), rs.getInt("carId"),
-                        rs.getString("name"), rs.getString("advantages"), rs.getDouble("pricePerMonth"),
+                insuranceList.add(new Insurance(rs.getInt("id"), rs.getInt("insurerId"), rs.getString("name"),
+                        rs.getString("advantages"), rs.getDouble("pricePerMonth"),
                         rs.getDouble("pricePerYear")));
             }
 
@@ -480,8 +507,8 @@ public class DAL {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                insuranceList.add(new Insurance(rs.getInt("id"), rs.getInt("ownerId"), rs.getInt("carId"),
-                        rs.getString("name"), rs.getString("advantages"), rs.getDouble("pricePerMonth"),
+                insuranceList.add(new Insurance(rs.getInt("id"), rs.getInt("insurerId"), rs.getString("name"),
+                        rs.getString("advantages"), rs.getDouble("pricePerMonth"),
                         rs.getDouble("pricePerYear")));
             }
 
@@ -502,8 +529,7 @@ public class DAL {
             Insurance insurance = new Insurance();
             while (rs.next()) {
                 insurance.setId(rs.getInt("id"));
-                insurance.setOwnerId(rs.getInt("ownerId"));
-                insurance.setCarId(rs.getInt("carId"));
+                insurance.setInsurerId(rs.getInt("insurerId"));
                 insurance.setName(rs.getString("name"));
                 insurance.setAdvantages(rs.getString("advantages"));
                 insurance.setPricePerMonth(rs.getDouble("pricePerMonth"));
@@ -518,18 +544,17 @@ public class DAL {
         return new Insurance();
     }
 
-    public static Insurance getInsuranceByCarId(int carId) {
+    public static Insurance getInsuranceByInsurerId(int carId) {
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Insurance WHERE carId=?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Insurance WHERE insurerId=?");
             stmt.setInt(1, carId);
             ResultSet rs = stmt.executeQuery();
 
             Insurance insurance = new Insurance();
             while (rs.next()) {
                 insurance.setId(rs.getInt("id"));
-                insurance.setOwnerId(rs.getInt("ownerId"));
-                insurance.setCarId(rs.getInt("carId"));
+                insurance.setInsurerId(rs.getInt("insurerId"));
                 insurance.setName(rs.getString("name"));
                 insurance.setAdvantages(rs.getString("advantages"));
                 insurance.setPricePerMonth(rs.getDouble("pricePerMonth"));
@@ -543,6 +568,125 @@ public class DAL {
         }
         return new Insurance();
     }
+
+    public static void insertInsuranceDeal(InsuranceDeal insuranceDeal) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO InsuranceDeal (insuranceId,carId,userId) VALUES (?,?,?)");
+            stmt.setInt(1, insuranceDeal.getInsuranceId());
+            stmt.setInt(2, insuranceDeal.getCarId());
+            stmt.setInt(3, insuranceDeal.getUserId());
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void updateInsuranceDeal(int id, int insuranceId, int carId, int userId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("UPDATE InsuranceDeal SET insuranceId=?, carId=?, userId=? WHERE id=?");
+            stmt.setInt(1, insuranceId);
+            stmt.setInt(2, carId);
+            stmt.setInt(3, userId);
+            stmt.setInt(4, id);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void deleteInsuranceDeal(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM InsuranceDeal WHERE id=?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void getInsuranceDealList(List<InsuranceDeal> dealList) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM InsuranceDeal");
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                dealList.add(new InsuranceDeal(rs.getInt("id"),rs.getInt("insuranceId"),rs.getInt("carId"),rs.getInt("userId")));
+            }
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static InsuranceDeal getInsuranceDealById(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM InsuranceDeal WHERE id=?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            InsuranceDeal deal = new InsuranceDeal();
+            while(rs.next()) {
+                deal.setId(rs.getInt("id"));
+                deal.setInsuranceId(rs.getInt("insuranceId"));
+                deal.setCarId(rs.getInt("carId"));
+                deal.setUserId(rs.getInt("userId"));
+            }
+            return deal;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new InsuranceDeal();
+    }
+
+    public static InsuranceDeal getInsuranceDealByCarId(int carId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM InsuranceDeal WHERE carId=?");
+            stmt.setInt(1, carId);
+            ResultSet rs = stmt.executeQuery();
+
+            InsuranceDeal deal = new InsuranceDeal();
+            while(rs.next()) {
+                deal.setId(rs.getInt("id"));
+                deal.setInsuranceId(rs.getInt("insuranceId"));
+                deal.setCarId(rs.getInt("carId"));
+                deal.setUserId(rs.getInt("userId"));
+            }
+            return deal;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new InsuranceDeal();
+    }
+
+    public static void getInsuranceDealByUserId(List<InsuranceDeal> dealList,int userId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM InsuranceDeal WHERE userId=?");
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()) {
+                dealList.add(new InsuranceDeal(rs.getInt("id"),rs.getInt("insuranceId"),rs.getInt("carId"),rs.getInt("userId")));
+            }
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+
 
     public static void insertInsurer(Insurer insurer) {
         try {
@@ -641,7 +785,7 @@ public class DAL {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO InsurerComment (comentatorId,insurerId,commentDate,comment,rating) WHERE (?,?,?,?,?)");
+                    "INSERT INTO InsurerComment (comentatorId,insurerId,commentDate,comment,rating) VALUES (?,?,?,?,?)");
             stmt.setInt(1, comment.getComentatorId());
             stmt.setInt(2, comment.getInsurerId());
             Date commentDate = new Date(System.currentTimeMillis());
@@ -656,17 +800,16 @@ public class DAL {
         }
     }
 
-    public static void updateInsurerComment(int id, int comentatorId, int insurerId, Date commentDate, String comment,
+    public static void updateInsurerComment(int id, int comentatorId, int insurerId, String comment,
             double rating) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE InsurerComment SET comentatorId=?, insurerId=?, commentDate=?, comment=?, rating=?");
+                    "UPDATE InsurerComment SET comentatorId=?, insurerId=?, comment=?, rating=?");
             stmt.setInt(1, comentatorId);
             stmt.setInt(2, insurerId);
-            stmt.setDate(3, commentDate);
-            stmt.setString(4, comment);
-            stmt.setDouble(5, rating);
+            stmt.setString(3, comment);
+            stmt.setDouble(4, rating);
 
             stmt.executeUpdate();
             conn.close();
@@ -772,12 +915,16 @@ public class DAL {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO RentAnnouncement (carId,renterId,location,insurance,insuranceTime,price,negotiable) VALUES (?,?,?,?,?,?,?)");
+                    "INSERT INTO RentAnnouncement (carId,renterId,location,insurance,insuranceId,price,negotiable) VALUES (?,?,?,?,?,?,?)");
             stmt.setInt(1, announcement.getCarId());
             stmt.setInt(2, announcement.getRenterId());
             stmt.setString(3, announcement.getLocation());
             stmt.setBoolean(4, announcement.hasInsurance());
-            stmt.setInt(5, announcement.getInsuranceTime());
+            if (announcement.hasInsurance()) {
+                stmt.setInt(5, announcement.getInsuranceId());
+            } else {
+                stmt.setNull(5, 0);
+            }
             stmt.setDouble(6, announcement.getPrice());
             stmt.setBoolean(7, announcement.isNegotiable());
 
@@ -788,20 +935,22 @@ public class DAL {
         }
     }
 
-    public static void updateRentAnnouncement(int id, int carId, int renterId, String location, boolean insurance,
-            int insuranceTime, double price, boolean negotiable) {
+    public static void updateRentAnnouncement(int id, String location, boolean insurance,
+            int insuranceId, double price, boolean negotiable) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE RentAnnouncement SET carId=?, renterId=?, location=?, insurance=?, insuranceTime=?, price=?, negotiable=? WHERE id=?");
-            stmt.setInt(1, carId);
-            stmt.setInt(2, renterId);
-            stmt.setString(3, location);
-            stmt.setBoolean(4, insurance);
-            stmt.setInt(5, insuranceTime);
-            stmt.setDouble(6, price);
-            stmt.setBoolean(7, negotiable);
-            stmt.setInt(8, id);
+                    "UPDATE RentAnnouncement SET location=?, insurance=?, insuranceId=?, price=?, negotiable=? WHERE id=?");
+            stmt.setString(1, location);
+            stmt.setBoolean(2, insurance);
+            if (insurance) {
+                stmt.setInt(3, insuranceId);
+            } else {
+                stmt.setNull(3, 0);
+            }
+            stmt.setDouble(4, price);
+            stmt.setBoolean(5, negotiable);
+            stmt.setInt(6, id);
 
             stmt.executeUpdate();
             conn.close();
@@ -830,7 +979,7 @@ public class DAL {
 
             while (rs.next()) {
                 announcementList.add(new RentAnnouncement(rs.getInt("id"), rs.getInt("carId"), rs.getInt("renterId"),
-                        rs.getString("location"), rs.getBoolean("insurance"), rs.getInt("insuranceTime"),
+                        rs.getString("location"), rs.getBoolean("insurance"), rs.getInt("insuranceId"),
                         rs.getDouble("price"), rs.getBoolean("negotiable")));
             }
 
@@ -855,7 +1004,7 @@ public class DAL {
                 announcement.setRenterId(rs.getInt("renterId"));
                 announcement.setLocation(rs.getString("location"));
                 announcement.setInsurance(rs.getBoolean("insurance"));
-                announcement.setInsuranceTime(rs.getInt("insuranceTime"));
+                announcement.setInsuranceId(rs.getInt("insuranceId"));
                 announcement.setPrice(rs.getDouble("price"));
                 announcement.setNegotiable(rs.getBoolean("negotiable"));
             }
@@ -875,7 +1024,7 @@ public class DAL {
 
             while (rs.next()) {
                 announcementList.add(new RentAnnouncement(rs.getInt("id"), rs.getInt("carId"), rs.getInt("renterId"),
-                        rs.getString("location"), rs.getBoolean("insurance"), rs.getInt("insuranceTime"),
+                        rs.getString("location"), rs.getBoolean("insurance"), rs.getInt("insuranceId"),
                         rs.getDouble("price"), rs.getBoolean("negotiable")));
             }
         } catch (Exception e) {
@@ -1015,7 +1164,12 @@ public class DAL {
             stmt.setInt(2, announcement.getSellerId());
             stmt.setString(3, announcement.getLocation());
             stmt.setBoolean(4, announcement.hasWarranty());
-            stmt.setInt(5, announcement.getWarrantyTime());
+            if (announcement.hasWarranty()) {
+                stmt.setInt(5, announcement.getWarrantyTime());
+            } else {
+                stmt.setInt(5, 0);
+            }
+
             stmt.setBoolean(6, announcement.getSecondkey());
             stmt.setDouble(7, announcement.getPrice());
             stmt.setBoolean(8, announcement.isNegotiable());
@@ -1027,21 +1181,23 @@ public class DAL {
         }
     }
 
-    public static void updateSaleAnnouncement(int id, int carId, int sellerId, String location, boolean warranty,
+    public static void updateSaleAnnouncement(int id, String location, boolean warranty,
             int warrantyTime, boolean secondKey, double price, boolean negotiable) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE SaleAnnouncement SET carId=?, sellerId=?, location=?, warranty=?, warrantyTime=?, secondKey=?, price=?, negotiable=? WHERE id=?");
-            stmt.setInt(1, carId);
-            stmt.setInt(2, sellerId);
-            stmt.setString(3, location);
-            stmt.setBoolean(4, warranty);
-            stmt.setInt(5, warrantyTime);
-            stmt.setBoolean(6, secondKey);
-            stmt.setDouble(7, price);
-            stmt.setBoolean(8, negotiable);
-            stmt.setInt(9, id);
+                    "UPDATE SaleAnnouncement SET location=?, warranty=?, warrantyTime=?, secondKey=?, price=?, negotiable=? WHERE id=?");
+            stmt.setString(1, location);
+            stmt.setBoolean(2, warranty);
+            if (warranty) {
+                stmt.setInt(3, warrantyTime);
+            } else {
+                stmt.setInt(3, 0);
+            }
+            stmt.setBoolean(4, secondKey);
+            stmt.setDouble(5, price);
+            stmt.setBoolean(6, negotiable);
+            stmt.setInt(7, id);
 
             stmt.executeUpdate();
             conn.close();
@@ -1123,5 +1279,240 @@ public class DAL {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public static void insertSaleDeal(SaleDeal deal) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn
+                    .prepareStatement("INSERT INTO SaleDeal (buyerId, announcementId, price, done) VALUES (?,?,?,?)");
+            stmt.setInt(1, deal.getBuyerId());
+            stmt.setInt(2, deal.getAnnouncementId());
+            stmt.setDouble(3, deal.getPrice());
+            stmt.setBoolean(4, deal.isDone());
+
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void updateSaleDeal(int id, int buyerId, int announcementId, double price, boolean done) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn
+                    .prepareStatement("UPDATE SaleDeal SET buyerId=?, announcementId=?, price=?, done=? WHERE id=?");
+            stmt.setInt(1, buyerId);
+            stmt.setInt(2, announcementId);
+            stmt.setDouble(3, price);
+            stmt.setBoolean(4, done);
+            stmt.setInt(5, id);
+
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void deleteSaleDeal(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM SaleDeal WHERE id=?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void getSaleDealList(List<SaleDeal> dealsList) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM SaleDeal");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                dealsList.add(new SaleDeal(rs.getInt("id"), rs.getInt("buyerId"), rs.getInt("announcementId"),
+                        rs.getDouble("price"), rs.getBoolean("done")));
+            }
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static SaleDeal getSaleDealById(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM SaleDeal WHERE id=?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            SaleDeal deal = new SaleDeal();
+            while (rs.next()) {
+                deal.setId(rs.getInt("id"));
+                deal.setBuyerId(rs.getInt("buyerId"));
+                deal.setAnnouncementId(rs.getInt("announcementId"));
+                deal.setPrice(rs.getDouble("price"));
+                deal.setDone(rs.getBoolean("done"));
+            }
+            conn.close();
+            return deal;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new SaleDeal();
+    }
+
+    public static void getSaleDealByBuyerId(List<SaleDeal> dealsList, int buyerId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM SaleDeal WHERE buyerId=?");
+            stmt.setInt(1, buyerId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                dealsList.add(new SaleDeal(rs.getInt("id"), rs.getInt("buyerId"), rs.getInt("announcementId"),
+                        rs.getDouble("price"), rs.getBoolean("done")));
+            }
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void getSaleDealByAnnouncementId(List<SaleDeal> dealsList, int announcementId) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM SaleDeal WHERE announcementId=?");
+            stmt.setInt(1, announcementId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                dealsList.add(new SaleDeal(rs.getInt("id"), rs.getInt("buyerId"), rs.getInt("announcementId"),
+                        rs.getDouble("price"), rs.getBoolean("done")));
+            }
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void insertUser(User user) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO User (fullname, email, password, phoneNumber, nationality, district, city, birthDate,accountCreationDate, admin) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            stmt.setString(1, user.getFullname());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getPassword());
+            stmt.setString(4, user.getPhoneNumber());
+            stmt.setString(5, user.getNationality());
+            stmt.setString(6, user.getDistrict());
+            stmt.setString(7, user.getCity());
+            Date birthDate = Utils.DateConvertedToSqlDateByString(user.getBirthDate());
+            stmt.setDate(8, birthDate);
+            Date accountCreationDate = new Date(System.currentTimeMillis());
+            stmt.setDate(9, accountCreationDate);
+            stmt.setBoolean(10, false);
+
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void updateUser(int id, String fullname, String email, String password, String phoneNumber,
+            String nationality, String district, String city, String birthDate, boolean admin) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE User SET fullname=?, email=?, password=?, phoneNumber=?, nationality=?, district=?, city=?, birthDate=?, admin=? WHERE id=?");
+            stmt.setString(1, fullname);
+            stmt.setString(2, email);
+            stmt.setString(3, password);
+            stmt.setString(4, phoneNumber);
+            stmt.setString(5, nationality);
+            stmt.setString(6, district);
+            stmt.setString(7, city);
+            Date birthDateInDate = Utils.DateConvertedToSqlDateByString(birthDate);
+            stmt.setDate(8, birthDateInDate);
+            stmt.setBoolean(9, admin);
+            stmt.setInt(10, id);
+
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void deleteUser(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM User WHERE id=?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void getUserList(List<User> userList) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                userList.add(new User(rs.getInt("id"), rs.getString("fullname"), rs.getString("email"),
+                        rs.getString("phoneNumber"), rs.getString("nationality"), rs.getString("district"),
+                        rs.getString("city"), rs.getDate("birthDate").toString(), rs.getDate("accountCreationDate"),
+                        rs.getBoolean("admin")));
+            }
+
+            conn.close();
+            return;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static User getUserById(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User WHERE id=?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            User user = new User();
+            while (rs.next()) {
+                user.setId(rs.getInt("id"));
+                user.setFullname(rs.getString("fullname"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setPhoneNumber(rs.getString("phoneNumber"));
+                user.setNationality(rs.getString("nationality"));
+                user.setDistrict(rs.getString("district"));
+                user.setCity(rs.getString("city"));
+                user.setBirthDate(rs.getDate("birthDate").toString());
+                user.setAccountCreationDate(rs.getDate("accountCreationDate"));
+                user.setAdmin(rs.getBoolean("admin"));
+            }
+
+            conn.close();
+            return user;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new User();
     }
 }

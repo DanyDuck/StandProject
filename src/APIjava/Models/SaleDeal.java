@@ -2,8 +2,6 @@ package APIjava.Models;
 
 public class SaleDeal {
     private int id;
-    private int carId;
-    private int sellerId;
     private int buyerId;
     private int announcementId;
     private double price;
@@ -15,8 +13,6 @@ public class SaleDeal {
 
     public SaleDeal() {
         this.id = INT_BY_DEFAULT;
-        this.carId = INT_BY_DEFAULT;
-        this.sellerId = INT_BY_DEFAULT;
         this.buyerId = INT_BY_DEFAULT;
         this.announcementId = INT_BY_DEFAULT;
         this.price = DOUBLE_BY_DEFAULT;
@@ -24,19 +20,15 @@ public class SaleDeal {
     }
 
 
-    public SaleDeal(int id, int carId, int sellerId, int buyerId, int announcementId, double price, boolean done) {
+    public SaleDeal(int id, int buyerId, int announcementId, double price, boolean done) {
         this.id = id;
-        this.carId = carId;
-        this.sellerId = sellerId;
         this.buyerId = buyerId;
         this.announcementId = announcementId;
         this.price = price;
         this.done = done;
     }
 
-    public SaleDeal(int carId, int sellerId, int buyerId, int announcementId, double price, boolean done) {
-        this.carId = carId;
-        this.sellerId = sellerId;
+    public SaleDeal(int buyerId, int announcementId, double price, boolean done) {
         this.buyerId = buyerId;
         this.announcementId = announcementId;
         this.price = price;
@@ -46,8 +38,6 @@ public class SaleDeal {
 
     public SaleDeal(SaleDeal deals) {
         this.id = deals.id;
-        this.carId = deals.carId;
-        this.sellerId = deals.sellerId;
         this.buyerId = deals.buyerId;
         this.announcementId = deals.announcementId;
         this.price = deals.price;
@@ -61,22 +51,6 @@ public class SaleDeal {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getCarId() {
-        return this.carId;
-    }
-
-    public void setCarId(int carId) {
-        this.carId = carId;
-    }
-
-    public int getSellerId() {
-        return this.sellerId;
-    }
-
-    public void setSellerId(int sellerId) {
-        this.sellerId = sellerId;
     }
 
     public int getBuyerId() {
@@ -120,8 +94,6 @@ public class SaleDeal {
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
-            ", carId='" + getCarId() + "'" +
-            ", sellerId='" + getSellerId() + "'" +
             ", buyerId='" + getBuyerId() + "'" +
             ", announcementId='" + getAnnouncementId() + "'" +
             ", price='" + getPrice() + "'" +

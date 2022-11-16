@@ -18,13 +18,11 @@ public class Car {
     private String origin;
     private double fuelConsumption;
     private double acceleration;
-    private String condition;
+    private String carCondition;
 
     private static final int INT_BY_DEFAULT = 0;
     private static final String STRING_BY_DEFAULT = "Non Defined";
     private static final double DOUBLE_BY_DEFAULT = 0.0;
-
-    static int carsNumber = 0;
 
     public Car() {
         this.id = INT_BY_DEFAULT;
@@ -43,12 +41,12 @@ public class Car {
         this.origin = STRING_BY_DEFAULT;
         this.fuelConsumption = DOUBLE_BY_DEFAULT;
         this.acceleration = DOUBLE_BY_DEFAULT;
-        this.condition = STRING_BY_DEFAULT;
+        this.carCondition = STRING_BY_DEFAULT;
     }
 
     public Car(int id, int brandId, String model, String category, String color, String fuelType, int year, int miles,
             int engineCapacity, int horsePower, String transmition, int doorsNumber, int capacity, String origin,
-            double fuelConsumption, double acceleration, String condition) {
+            double fuelConsumption, double acceleration, String carCondition) {
         
         this.id = id;
         this.brandId = brandId;
@@ -66,11 +64,11 @@ public class Car {
         this.origin = origin;
         this.fuelConsumption = fuelConsumption;
         this.acceleration = acceleration;
-        this.condition = condition;
+        this.carCondition = carCondition;
     }
 
 
-    public Car(int brandId, String model, String category, String color, String fuelType, int year, int miles, int engineCapacity, int horsePower, String transmition, int doorsNumber, int capacity, String origin, double fuelConsumption, double acceleration, String condition) {
+    public Car(int brandId, String model, String category, String color, String fuelType, int year, int miles, int engineCapacity, int horsePower, String transmition, int doorsNumber, int capacity, String origin, double fuelConsumption, double acceleration, String carCondition) {
         this.brandId = brandId;
         this.model = model;
         this.category = category;
@@ -86,7 +84,7 @@ public class Car {
         this.origin = origin;
         this.fuelConsumption = fuelConsumption;
         this.acceleration = acceleration;
-        this.condition = condition;
+        this.carCondition = carCondition;
     }
 
     public Car(Car car) {
@@ -106,7 +104,7 @@ public class Car {
         this.origin = car.origin;
         this.fuelConsumption = car.fuelConsumption;
         this.acceleration = car.acceleration;
-        this.condition = car.condition;
+        this.carCondition = car.carCondition;
     }
 
 
@@ -238,12 +236,12 @@ public class Car {
         this.acceleration = acceleration;
     }
 
-    public String getCondition() {
-        return this.condition;
+    public String getCarCondition() {
+        return this.carCondition;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setCarCondition(String carCondition) {
+        this.carCondition = carCondition;
     }
 
 
@@ -266,7 +264,7 @@ public class Car {
             ", origin='" + getOrigin() + "'" +
             ", fuelConsumption='" + getFuelConsumption() + "'" +
             ", acceleration='" + getAcceleration() + "'" +
-            ", condition='" + getCondition() + "'" +
+            ", carCondition='" + getCarCondition() + "'" +
             "}";
     }
 
